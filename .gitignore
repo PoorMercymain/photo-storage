@@ -19,3 +19,12 @@
 
 # Go workspace file
 go.work
+
+# Log files
+*.log
+
+# File containing the last ID
+lastID.txt
+
+# Photo storage directory
+photos/
