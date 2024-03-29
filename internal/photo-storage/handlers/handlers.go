@@ -2,10 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 
+	appErrors "github.com/PoorMercymain/photo-storage/errors"
 	"github.com/PoorMercymain/photo-storage/internal/photo-storage/domain"
 )
 
@@ -64,5 +67,33 @@ func (h *photoStorage) UploadPhoto(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *photoStorage) GetPhoto(w http.ResponseWriter, r *http.Request)  {
-	return
+	idStr := r.PathValue("id")
+	if idStr == "" {
+		http.Error(w, "id was not provided" , http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "provided id is not a number" , http.StatusBadRequest)
+		return
+	}
+
+	photoBytes, photoType, err := h.srv.GetPhoto(id)
+	if err != nil {
+		if errors.Is(err, appErrors.ErrFileNotFound) {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
+
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "image/" + photoType)
+
+	_, err = w.Write(photoBytes)
+	if err != nil {
+		http.Error(w, "failed to send multipart data", http.StatusInternalServerError)
+	}
 }

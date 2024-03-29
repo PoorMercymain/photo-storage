@@ -5,8 +5,12 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"sync"
+
+	appErrors "github.com/PoorMercymain/photo-storage/errors"
 )
 
 type photoStorage struct {
@@ -81,6 +85,24 @@ func (r *photoStorage) UploadPhoto(fileBytes []byte, fileType string) (int, erro
 	return r.id, nil
 }
 
-func (r *photoStorage) GetPhoto(id int) ([]byte, error) {
-	return nil, nil
+func (r *photoStorage) GetPhoto(id int) ([]byte, string, error) {
+	pattern := filepath.Join("photos", fmt.Sprintf("photo_%d.*", id))
+
+	files, err := filepath.Glob(pattern)
+	if err != nil {
+		return nil, "", err
+	}
+
+	if len(files) == 0 {
+		return nil, "", appErrors.ErrFileNotFound
+	}
+
+	content, err := os.ReadFile(files[0])
+	if err != nil {
+		return nil, "", err
+	}
+
+	ext := strings.TrimPrefix(filepath.Ext(files[0]), ".")
+
+	return content, ext, nil
 }

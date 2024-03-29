@@ -14,6 +14,6 @@ func (s *photoStorage) UploadPhoto(fileBytes []byte, fileType string) (int, erro
 	return s.repo.UploadPhoto(fileBytes, fileType)
 }
 
-func (s *photoStorage) GetPhoto(id int) ([]byte, error)  {
+func (s *photoStorage) GetPhoto(id int) ([]byte, string, error)  {
 	return s.repo.GetPhoto(id)
 }

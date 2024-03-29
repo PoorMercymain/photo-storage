@@ -32,7 +32,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.Handle("POST /upload", http.HandlerFunc(h.UploadPhoto))
-	mux.Handle("GET /get", http.HandlerFunc(h. GetPhoto))
+	mux.Handle("GET /get/{id}", http.HandlerFunc(h. GetPhoto))
 
 	server := &http.Server{
 		Addr:     "localhost" + ":" + strconv.Itoa(8080),
