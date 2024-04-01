@@ -10,11 +10,12 @@ import (
 	"syscall"
 	"time"
 
+	"go.uber.org/zap"
+
 	"github.com/PoorMercymain/photo-storage/internal/photo-storage/handlers"
 	"github.com/PoorMercymain/photo-storage/internal/photo-storage/repository"
 	"github.com/PoorMercymain/photo-storage/internal/photo-storage/service"
 	"github.com/PoorMercymain/photo-storage/pkg/logger"
-	"go.uber.org/zap"
 )
 
 func main() {
@@ -23,7 +24,7 @@ func main() {
 
 	allowedMIME := map[string]struct{}{
 		"image/jpeg": {},
-		"image/png": {},
+		"image/png":  {},
 		"image/webp": {},
 	}
 
@@ -32,7 +33,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.Handle("POST /upload", http.HandlerFunc(h.UploadPhoto))
-	mux.Handle("GET /get/{id}", http.HandlerFunc(h. GetPhoto))
+	mux.Handle("GET /get/{id}", http.HandlerFunc(h.GetPhoto))
 
 	server := &http.Server{
 		Addr:     "localhost" + ":" + strconv.Itoa(8080),

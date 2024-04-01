@@ -13,7 +13,7 @@ import (
 )
 
 type photoStorage struct {
-	srv domain.PhotoStorageService
+	srv         domain.PhotoStorageService
 	allowedMIME map[string]struct{}
 }
 
@@ -22,31 +22,23 @@ func New(srv domain.PhotoStorageService, allowedMIME map[string]struct{}) *photo
 }
 
 func (h *photoStorage) UploadPhoto(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseMultipartForm(10 << 20)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if r.ContentLength > 1024*1024*10 {
+		http.Error(w, "10 MB is the maximum size of file to upload", http.StatusBadRequest)
 		return
 	}
 
-	file, fileHeader, err := r.FormFile("photo")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	defer file.Close()
-
-	if _, ok := h.allowedMIME[fileHeader.Header.Get("Content-Type")]; !ok {
-		http.Error(w, "allowed types are only: jpeg, png and webp" , http.StatusBadRequest)
+	if _, ok := h.allowedMIME[r.Header.Get("Content-Type")]; !ok {
+		http.Error(w, "allowed types are only: jpeg, png and webp", http.StatusBadRequest)
 		return
 	}
 
-	fileBytes, err := io.ReadAll(file)
+	fileBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	idNum, err := h.srv.UploadPhoto(fileBytes, strings.TrimPrefix(fileHeader.Header.Get("Content-Type"), "image/"))
+	idNum, err := h.srv.UploadPhoto(fileBytes, strings.TrimPrefix(r.Header.Get("Content-Type"), "image/"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -66,16 +58,16 @@ func (h *photoStorage) UploadPhoto(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *photoStorage) GetPhoto(w http.ResponseWriter, r *http.Request)  {
+func (h *photoStorage) GetPhoto(w http.ResponseWriter, r *http.Request) {
 	idStr := r.PathValue("id")
 	if idStr == "" {
-		http.Error(w, "id was not provided" , http.StatusBadRequest)
+		http.Error(w, "id was not provided", http.StatusBadRequest)
 		return
 	}
 
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "provided id is not a number" , http.StatusBadRequest)
+		http.Error(w, "provided id is not a number", http.StatusBadRequest)
 		return
 	}
 
@@ -90,7 +82,7 @@ func (h *photoStorage) GetPhoto(w http.ResponseWriter, r *http.Request)  {
 		return
 	}
 
-	w.Header().Set("Content-Type", "image/" + photoType)
+	w.Header().Set("Content-Type", "image/"+photoType)
 
 	_, err = w.Write(photoBytes)
 	if err != nil {

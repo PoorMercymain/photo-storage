@@ -22,10 +22,10 @@ func New() *photoStorage {
 	var number int
 
 	file, err := os.Open("lastID.txt")
-    if err != nil {
-        if !errors.Is(err, fs.ErrNotExist) {
+	if err != nil {
+		if !errors.Is(err, fs.ErrNotExist) {
 			panic(err)
-        }
+		}
 	} else {
 		defer file.Close()
 
@@ -40,15 +40,15 @@ func New() *photoStorage {
 
 func (r *photoStorage) saveID() error {
 	file, err := os.OpenFile("lastID.txt", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
-    if err != nil {
-        return err
-    }
-    defer file.Close()
+	if err != nil {
+		return err
+	}
+	defer file.Close()
 
-    _, err = fmt.Fprintf(file, "%d", r.id)
-    if err != nil {
-        return err
-    }
+	_, err = fmt.Fprintf(file, "%d", r.id)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -62,10 +62,10 @@ func (r *photoStorage) UploadPhoto(fileBytes []byte, fileType string) (int, erro
 	path := "photos/"
 
 	if _, err := os.Stat(path); errors.Is(err, fs.ErrNotExist) {
-        err := os.Mkdir(path, 0755)
-        if err != nil {
-            return 0, err
-        }
+		err := os.Mkdir(path, 0755)
+		if err != nil {
+			return 0, err
+		}
 	} else if err != nil {
 		return 0, err
 	}
