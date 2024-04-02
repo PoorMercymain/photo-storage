@@ -22,6 +22,8 @@ func New(srv domain.PhotoStorageService, allowedMIME map[string]struct{}) *photo
 }
 
 func (h *photoStorage) UploadPhoto(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
 	if r.ContentLength > 1024*1024*10 {
 		http.Error(w, "10 MB is the maximum size of file to upload", http.StatusBadRequest)
 		return
@@ -59,6 +61,8 @@ func (h *photoStorage) UploadPhoto(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *photoStorage) GetPhoto(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	
 	idStr := r.PathValue("id")
 	if idStr == "" {
 		http.Error(w, "id was not provided", http.StatusBadRequest)

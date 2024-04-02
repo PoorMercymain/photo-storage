@@ -6,6 +6,7 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"io"
 	"math/rand"
 	"net/http"
 	"testing"
@@ -45,6 +46,19 @@ type ImageList struct {
 	curr *ListNode
 }
 
+func (l *ImageList) PrintImages() {
+	if l.head == nil {
+		fmt.Println("Список пуст")
+		return
+	}
+
+	current := l.head.ImageBuffer
+	for range 5 {
+		fmt.Printf("Размер изображения: %d байт\n", current.Len())
+		current = l.Next()
+	}
+}
+
 func (l *ImageList) Add(buffer *bytes.Buffer) {
 	node := &ListNode{ImageBuffer: buffer}
 	if l.head == nil {
@@ -76,6 +90,7 @@ func NewImageList(n int) (*ImageList, error) {
 		}
 		list.Add(imageBuffer)
 	}
+
 	return list, nil
 }
 
@@ -91,19 +106,22 @@ func BenchmarkUploadFile(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		for j := 0; j < numImages; j++ {
-			buffer := imageList.Next()
-			req, err := http.NewRequest("POST", "http://localhost:8080/upload", buffer)
-			if err != nil {
-				b.Fatalf("Не удалось создать запрос: %v", err)
-			}
-			req.Header.Set("Content-Type", "image/png")
+		buffer := io.NopCloser(bytes.NewReader(imageList.Next().Bytes()))
 
-			resp, err := client.Do(req)
-			if err != nil {
-				b.Fatalf("Ошибка при выполнении запроса: %v", err)
-			}
-			resp.Body.Close()
+		req, err := http.NewRequest("POST", "http://localhost:8080/upload", buffer)
+		if err != nil {
+			b.Fatalf("Не удалось создать запрос: %v", err)
+		}
+		req.Header.Set("Content-Type", "image/png")
+
+		resp, err := client.Do(req)
+		if err != nil {
+			b.Fatalf("Ошибка при выполнении запроса: %v", err)
+		}
+		resp.Body.Close()
+
+		if resp.StatusCode != http.StatusCreated {
+			b.Fatalf("Ошибка при получении ответа с сервера: неправильный статус-код (%d, а не 201)", resp.StatusCode)
 		}
 	}
 }
