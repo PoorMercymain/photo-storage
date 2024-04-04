@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"expvar"
 	"log"
 	"net/http"
+	"net/http/pprof"
 	"os"
 	"os/signal"
 	"strconv"
@@ -34,6 +36,20 @@ func main() {
 
 	mux.Handle("POST /upload", http.HandlerFunc(h.UploadPhoto))
 	mux.Handle("GET /get/{id}", http.HandlerFunc(h.GetPhoto))
+
+	mux.HandleFunc("/pprof/*", pprof.Index)
+	mux.HandleFunc("/pprof/cmdline", pprof.Cmdline)
+	mux.HandleFunc("/pprof/profile", pprof.Profile)
+	mux.HandleFunc("/pprof/symbol", pprof.Symbol)
+	mux.HandleFunc("/pprof/trace", pprof.Trace)
+	mux.Handle("/vars", expvar.Handler())
+
+	mux.Handle("/pprof/goroutine", pprof.Handler("goroutine"))
+	mux.Handle("/pprof/threadcreate", pprof.Handler("threadcreate"))
+	mux.Handle("/pprof/mutex", pprof.Handler("mutex"))
+	mux.Handle("/pprof/heap", pprof.Handler("heap"))
+	mux.Handle("/pprof/block", pprof.Handler("block"))
+	mux.Handle("/pprof/allocs", pprof.Handler("allocs"))
 
 	server := &http.Server{
 		Addr:     "localhost" + ":" + strconv.Itoa(8080),

@@ -62,7 +62,7 @@ func (h *photoStorage) UploadPhoto(w http.ResponseWriter, r *http.Request) {
 
 func (h *photoStorage) GetPhoto(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	
+
 	idStr := r.PathValue("id")
 	if idStr == "" {
 		http.Error(w, "id was not provided", http.StatusBadRequest)
