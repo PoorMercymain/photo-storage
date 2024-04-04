@@ -20,5 +20,11 @@ take-profile:
 visualize-profile:
 	BROWSER=$(BROWSER_PATH) go tool pprof -http :8081 profiles/profile.pprof
 
+visualize-second-profile:
+	BROWSER=$(BROWSER_PATH) go tool pprof -http :8080 profiles/profile_after.pprof
+
+take-second-profile:
+	curl -s http://localhost:8080/pprof/profile?seconds=20 > profiles/profile_after.pprof
+
 build-pgo:
 	go build -pgo 'profiles/profile.pprof' cmd/photo-storage/main.go
