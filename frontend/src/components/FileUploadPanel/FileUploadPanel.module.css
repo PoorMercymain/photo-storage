@@ -1,0 +1,52 @@
+.container {
+  background: #ffffff;
+  height: 396px;
+  width: 588px;
+  margin: 0 auto;
+  border-radius: 12px;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.positionCenter {
+  top: 50vh;
+  transform: translate(0, -50%);
+}
+
+.uploadPanel {
+  border: 2px dashed #999ea4;
+  border-radius: 12px;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 30px;
+
+  background: #f4faff;
+}
+
+.uploadPanel:hover {
+  border: 2px dashed #767b81;
+  background: #eef7ff;
+}
+
+.flexUploadPanel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.uploadPanel h3 {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 25px;
+}
+
+.uploadPanel span {
+  color: #292c32ad;
+  font-size: 18px;
+  margin-bottom: 25px;
+}

@@ -1,0 +1,12 @@
+.uploadPanel {
+  border-width: 0;
+  background: #f6ed69;
+  padding: 18px;
+  border-radius: 15px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.uploadPanel:hover {
+  background: #fff34a;
+} 

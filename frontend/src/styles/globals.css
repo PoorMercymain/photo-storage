@@ -1,0 +1,10 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities;
+*/
+
+.body {
+  background: #d8d8d8;
+  height: 100vh;
+  font-family: "PTSans", Arial, sans-serif;
+}
