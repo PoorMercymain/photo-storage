@@ -1,7 +1,7 @@
 .container {
   background: #ffffff;
-  height: 396px;
-  width: 588px;
+  height: 400px;
+  width: 600px;
   margin: 0 auto;
   border-radius: 12px;
   position: relative;
@@ -37,6 +37,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  height: 100%;
+  width: 100%;
 }
 
 .uploadPanel h3 {
@@ -49,4 +52,19 @@
   color: #292c32ad;
   font-size: 18px;
   margin-bottom: 25px;
+}
+
+.selectedImage {
+  border: 2px solid #ccc;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: auto;
+  max-width: 575px;
+}
+
+.hiding {
+  display: none;
 }

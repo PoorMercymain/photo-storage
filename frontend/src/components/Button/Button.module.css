@@ -9,4 +9,23 @@
 
 .uploadPanel:hover {
   background: #fff34a;
-} 
+}
+
+.closeButton {
+  cursor: pointer;
+  z-index: 1;
+  right: 6px;
+  position: absolute;
+  top: 6px;
+  background: white;
+  padding: 0;
+  border: 1px solid black;
+  border-radius: 5px;
+
+  display: flex;
+  align-items: center;
+}
+
+.closeButton:hover {
+  background: #f9f9f9;
+}

@@ -13,7 +13,7 @@ const Home = () => (
     </Head>
     
     <main> 
-        <FileUploadPanel/>
+        <FileUploadPanel />
     </main>
   </>
 );

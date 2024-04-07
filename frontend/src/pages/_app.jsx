@@ -1,15 +1,15 @@
-import "@/styles/normalize.css";
-import "@/styles/globals.css";
-import "@/styles/fonts.css";
+import "@/styles/normalize.css"; // Импорт файла стилей для нормализации стилей в различных браузерах
+import "@/styles/globals.css"; // Импорт глобальных стилей для всего приложения
+import "@/styles/fonts.css"; // Импорт файла стилей для шрифтов
 
-import React from "react";
-import MainLayout from "../Layouts/MainLayout";
+import React from "react"; 
+import MainLayout from "../Layouts/MainLayout"; // Импорт компонента общего макета страницы
 
-/* Корневой элемент страницы */
+/* Корневой элемент приложения */
 const App = ({ Component, pageProps }) => {
   return (
-    <MainLayout>
-      <Component {...pageProps} />
+    <MainLayout> {/* Использование компонента MainLayout в качестве общего макета */}
+      <Component {...pageProps} /> {/* Рендеринг компонента страницы, передача всех свойств страницы */}
     </MainLayout>
   );
 };
