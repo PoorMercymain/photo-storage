@@ -5,6 +5,7 @@
   border-radius: 15px;
   font-size: 18px;
   cursor: pointer;
+  min-width: 201px;
 }
 
 .uploadPanel:hover {
@@ -13,10 +14,9 @@
 
 .closeButton {
   cursor: pointer;
-  z-index: 1;
-  right: 6px;
+  right: 0;
   position: absolute;
-  top: 6px;
+  top: 0;
   background: white;
   padding: 0;
   border: 1px solid black;
@@ -28,4 +28,22 @@
 
 .closeButton:hover {
   background: #f9f9f9;
+}
+
+.prevButton,
+.nextButton {
+  padding: 8px 16px; 
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 55px;
+  height: 55px;
+}
+
+.prevButton img,
+.nextButton img {
+  margin: 0;
+  padding: 0;
+  width: auto;
 }

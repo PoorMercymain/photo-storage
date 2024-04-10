@@ -1,0 +1,21 @@
+.slider {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  background: #d8d8d8;
+  justify-content: center;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.imageContainer {
+  margin: 0 20px;
+  position: relative;
+}
+
+.imageContainer img {
+  width: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
