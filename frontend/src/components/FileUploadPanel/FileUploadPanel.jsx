@@ -1,10 +1,13 @@
 import React, { useState, useRef } from "react";
 import style from "./FileUploadPanel.module.css";
 import Button from "../Button/Button";
-import Image from "next/image";
 import SuccessModal from "../SuccessModal/SuccessModal";
 import Slider from "../Slider/Slider";
 
+/**
+ * Компонент для загрузки файлов на сервер и отображения интерфейса загрузки.
+ * @returns {JSX.Element} - Компонент загрузки файлов.
+ */
 const FileUploadPanel = () => {
   const [selectedFiles, setSelectedFiles] = useState([]); // Состояние для выбранных файлов
   const [loading, setLoading] = useState(false); // Состояние загрузки
@@ -12,6 +15,7 @@ const FileUploadPanel = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false); // Состояние для отслеживания видимости всплывающего окна
   const fileInputRef = useRef(null); // Ссылка на элемент input для выбора файла
   const [drag, setDrag] = useState(false); // Состояние перетаскивания файла
+  const [currentId, setCurrentId] = useState(0); // Состояние текущего ID изображения в Slider
 
   // Обработчик изменения выбранных файлов
   const handleFileChange = async (event) => {
@@ -31,7 +35,6 @@ const FileUploadPanel = () => {
   const handleButtonClick = () => {
     fileInputRef.current.click(); // Эмулируем клик по input для выбора файла
   };
-
 
   // Обработчики событий перетаскивания файла
   const dragStartHandler = (e) => {
@@ -97,15 +100,15 @@ const FileUploadPanel = () => {
     }
   };
 
-  // Обработчик закрытия всплывающего окна
-  const handleCloseModal = () => {
-    setShowSuccessModal(false);
+  // Обработчик закрытия Slider и всплывающего окна
+  const handleCloseSlider = () => {
+    setShowSuccessModal(false); // Закрываем всплывающее окно
+    setFileFromServerLoaded(false); // Скрываем Slider и снова отображаем FileUploadPanel
   };
 
   return (
     <>
       <div className={`${style.container} ${style.positionCenter}`}>
-        {/* Область загрузки файла */}
         <div
           className={`${style.uploadPanel}`}
           onDrop={dropHandler}
@@ -119,21 +122,21 @@ const FileUploadPanel = () => {
             }
           }}
         >
-          {/* Показываем информацию о перетаскивании файла */}
+          {/* Показываем информацию о перетаскивании файла или выборе файла */}
           {drag ? (
             <div className={style.flexUploadPanel}>
               <h3>Отпустите файл чтобы загрузить его</h3>
             </div>
           ) : (
-            // Показываем информацию о выборе файла
             <div className={style.flexUploadPanel}>
               <h3>Перетащите изображение сюда</h3>
               <span>или нажмите на кнопку</span>
 
+              {/* Кнопки для выбора файла и загрузки файла с сервера */}
               <div className={style.flexButton}>
-                {/* Кнопка для выбора файла */}
                 <Button type="uploadPanel" onClick={handleButtonClick}>
                   Отправить на сервер
+                  {/* Элемент input для выбора файла */}
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -144,7 +147,6 @@ const FileUploadPanel = () => {
                   />
                 </Button>
 
-                {/* Кнопка для загрузки файла с сервера */}
                 <Button
                   type="uploadPanel"
                   onClick={fetchFileFromServer}
@@ -157,13 +159,19 @@ const FileUploadPanel = () => {
           )}
         </div>
 
-        {/* Отображаем выбранные файлы только если была нажата кнопка "Загрузить файл с сервера" */}
+        {/* Отображаем Slider, если была загружена картинка с сервера */}
         {fileFromServerLoaded ? (
-          <Slider images={selectedFiles} />
+          <Slider
+            images={selectedFiles}
+            currentId={currentId}
+            onClose={handleCloseSlider} // Передаем функцию для закрытия Slider
+          />
         ) : null}
 
         {/* Отображаем всплывающее окно в случае успеха */}
-        {showSuccessModal && <SuccessModal onClose={handleCloseModal} />}
+        {showSuccessModal && (
+          <SuccessModal onClose={() => setShowSuccessModal(false)} />
+        )}
       </div>
     </>
   );

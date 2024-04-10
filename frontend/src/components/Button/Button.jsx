@@ -10,9 +10,11 @@ import style from "./Button.module.css";
  * @returns {JSX.Element} - Компонент кнопки.
  */
 const Button = (props) => {
+  // Деструктуризация свойств компонента
   const { type, onClick, children } = props;
 
   return (
+    // Рендеринг кнопки с использованием стиля из CSS-модуля и переданными свойствами
     <button className={style[type]} onClick={onClick}>
       {children}
     </button>

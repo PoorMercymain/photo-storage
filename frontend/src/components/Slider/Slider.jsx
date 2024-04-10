@@ -4,14 +4,15 @@ import Button from "../Button/Button";
 import Image from "next/image";
 
 const Slider = ({ onClose }) => {
-  const [images, setImages] = useState([]); // Состояние для хранения изображений
-  const [currentId, setCurrentId] = useState(1); // Текущий ID изображения
+  const [images, setImages] = useState([]);
+  const [currentId, setCurrentId] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  // Функция для загрузки изображений с сервера
   const fetchImages = async () => {
     try {
+      setLoading(true);
       const fetchedImages = [];
-      let id = currentId;
+      let id = 1;
       let response = null;
 
       do {
@@ -24,74 +25,92 @@ const Slider = ({ onClose }) => {
         }
       } while (response.ok);
 
+      setLoading(false);
       setImages(fetchedImages);
+      setCurrentId(0);
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching images:", error);
     }
   };
 
-  // Обработчик нажатия на кнопку "Вправо"
   const handleNextButtonClick = () => {
-    setCurrentId(currentId + 1);
+    if (currentId < images.length - 1) {
+      setCurrentId(currentId + 1);
+    }
   };
 
-  // Обработчик нажатия на кнопку "Влево"
   const handlePrevButtonClick = () => {
-    if (currentId > 1) {
+    if (currentId > 0) {
       setCurrentId(currentId - 1);
     }
   };
 
-  // Загрузка изображений при монтировании компонента и при изменении текущего ID
   useEffect(() => {
     fetchImages();
-  }, [currentId]);
+  }, []);
 
   return (
     <>
       <div className={style.container}>
         <div className={style.slider}>
-          {/* Кнопка "Влево" */}
-          <Button type="prevButton" onClick={handlePrevButtonClick}>
-            <Image
-              src={"/svg/arrow-prev-small-svgrepo.svg"}
-              alt="arrow-prev"
-              height={55}
-              width={0}
-            />
-          </Button>
+          <div className={style.navigation}>
+            {/* Условие для отображения кнопки prevButton */}
+            {currentId > 0 && (
+              <Button
+                type="prevButton"
+                onClick={handlePrevButtonClick}
+                disabled={currentId === 0}
+              >
+                <Image
+                  src={"/svg/arrow-prev-small-svgrepo.svg"}
+                  alt="arrow-prev"
+                  height={55}
+                  width={0}
+                />
+              </Button>
+            )}
+          </div>
 
-          {/* Отображение текущего изображения */}
           <div className={style.imageContainer}>
-            {images.length > 0 && (
+            {!loading && images.length > 0 && (
               <Image
-                src={URL.createObjectURL(images[0])}
+                src={URL.createObjectURL(images[currentId])}
                 alt={`Image_${currentId}`}
                 height={560}
                 width={0}
               />
             )}
 
-            {/* Кнопка "Закрытия" */}
-            <Button type="closeButton">
-              <Image
-                src={"/svg/closeButton.svg"}
-                alt="closeButton"
-                height={25}
-                width={20}
-              />
-            </Button>
+            <div className={style.closeButton}>
+              <Button type="closeButton" onClick={onClose}>
+                <Image
+                  src={"/svg/closeButton.svg"}
+                  alt="closeButton"
+                  height={35}
+                  width={0}
+                />
+              </Button>
+            </div>
           </div>
 
-          {/* Кнопка "Вправо" */}
-          <Button type="nextButton" onClick={handleNextButtonClick}>
-            <Image
-              src={"/svg/arrow-next-small-svgrepo.svg"}
-              alt="arrow-next"
-              height={55}
-              width={0}
-            />
-          </Button>
+          <div className={style.navigation}>
+            {/* Условие для отображения кнопки nextButton */}
+            {currentId < images.length - 1 && (
+              <Button
+                type="nextButton"
+                onClick={handleNextButtonClick}
+                disabled={currentId === images.length - 1}
+              >
+                <Image
+                  src={"/svg/arrow-next-small-svgrepo.svg"}
+                  alt="arrow-next"
+                  height={55}
+                  width={0}
+                />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </>

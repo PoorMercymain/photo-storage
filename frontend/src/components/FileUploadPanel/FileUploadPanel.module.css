@@ -23,7 +23,6 @@
   right: 0;
   top: 0;
   margin: 30px;
-
   background: #f4faff;
 }
 
@@ -37,7 +36,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   height: 100%;
   width: 100%;
 }
@@ -60,7 +58,6 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
   width: auto;
   max-width: 575px;
 }
@@ -69,7 +66,7 @@
   display: none;
 }
 
-.flexButton{
+.flexButton {
   display: flex;
   width: 100%;
   justify-content: space-evenly;
