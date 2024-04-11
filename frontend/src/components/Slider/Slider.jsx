@@ -3,14 +3,21 @@ import style from "./Slider.module.css";
 import Button from "../Button/Button";
 import Image from "next/image";
 
+/**
+ * Компонент Slider для отображения изображений в галерее.
+ * @param {Object} props - Свойства компонента.
+ * @param {Function} props.onClose - Функция обратного вызова для закрытия Slider.
+ * @returns {JSX.Element} - Компонент Slider.
+ */
 const Slider = ({ onClose }) => {
-  const [images, setImages] = useState([]);
-  const [currentId, setCurrentId] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [images, setImages] = useState([]); // Состояние для изображений
+  const [currentId, setCurrentId] = useState(0); // Состояние для текущего ID изображения
+  const [loading, setLoading] = useState(false); // Состояние загрузки
 
+  // Функция для загрузки изображений с сервера
   const fetchImages = async () => {
     try {
-      setLoading(true);
+      setLoading(true); // Устанавливаем состояние загрузки в true
       const fetchedImages = [];
       let id = 1;
       let response = null;
@@ -25,27 +32,30 @@ const Slider = ({ onClose }) => {
         }
       } while (response.ok);
 
-      setLoading(false);
-      setImages(fetchedImages);
-      setCurrentId(0);
+      setLoading(false); // Устанавливаем состояние загрузки в false
+      setImages(fetchedImages); // Устанавливаем полученные изображения в состояние
+      setCurrentId(0); // Устанавливаем текущий ID изображения в 0
     } catch (error) {
-      setLoading(false);
-      console.error("Error fetching images:", error);
+      setLoading(false); // Устанавливаем состояние загрузки в false в случае ошибки
+      console.error("Error fetching images:", error); // Выводим ошибку в консоль
     }
   };
 
+  // Обработчик нажатия на кнопку "Следующее изображение"
   const handleNextButtonClick = () => {
     if (currentId < images.length - 1) {
-      setCurrentId(currentId + 1);
+      setCurrentId(currentId + 1); // Увеличиваем текущий ID на 1, если не достигнут конец списка изображений
     }
   };
 
+  // Обработчик нажатия на кнопку "Предыдущее изображение"
   const handlePrevButtonClick = () => {
     if (currentId > 0) {
-      setCurrentId(currentId - 1);
+      setCurrentId(currentId - 1); // Уменьшаем текущий ID на 1, если не достигнуто начало списка изображений
     }
   };
 
+  // Эффект для загрузки изображений сразу после монтирования компонента
   useEffect(() => {
     fetchImages();
   }, []);
@@ -55,7 +65,7 @@ const Slider = ({ onClose }) => {
       <div className={style.container}>
         <div className={style.slider}>
           <div className={style.navigation}>
-            {/* Условие для отображения кнопки prevButton */}
+            {/* Условие для отображения кнопки prevButton, если текущее изображение не первое */}
             {currentId > 0 && (
               <Button
                 type="prevButton"
@@ -73,6 +83,7 @@ const Slider = ({ onClose }) => {
           </div>
 
           <div className={style.imageContainer}>
+            {/* Отображаем текущее изображение */}
             {!loading && images.length > 0 && (
               <Image
                 src={URL.createObjectURL(images[currentId])}
@@ -82,6 +93,7 @@ const Slider = ({ onClose }) => {
               />
             )}
 
+            {/* Кнопка закрытия Slider */}
             <div className={style.closeButton}>
               <Button type="closeButton" onClick={onClose}>
                 <Image
@@ -95,7 +107,7 @@ const Slider = ({ onClose }) => {
           </div>
 
           <div className={style.navigation}>
-            {/* Условие для отображения кнопки nextButton */}
+            {/* Условие для отображения кнопки nextButton, если текущее изображение не последнее */}
             {currentId < images.length - 1 && (
               <Button
                 type="nextButton"
